@@ -1,17 +1,16 @@
 import { defineConfig } from "vite";
 import laravel from "laravel-vite-plugin";
+import react from "@vitejs/plugin-react"; // Dùng đúng plugin React
 
 export default defineConfig({
     plugins: [
         laravel({
-            input: ["resources/css/app.css", "resources/js/main.jsx"],
-
+            input: ["resources/js/main.jsx", "resources/css/app.css"],
             refresh: true,
         }),
+        react(), // Dùng đúng plugin React
     ],
-    build: {
-        rollupOptions: {
-            input: "resources/js/main.jsx", // Đổi đúng file entry
-        },
+    server: {
+        historyApiFallback: true, // Giúp React Router xử lý reload
     },
 });

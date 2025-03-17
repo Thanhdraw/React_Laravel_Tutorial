@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import { Link } from "react-router-dom";
 const Login = () => {
     // State để lưu email & password
     const [email, setEmail] = useState("");
@@ -9,6 +9,7 @@ const Login = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log("Email:", email, "Password:", password);
+        alert("gửi form thanh công");
     };
 
     return (
@@ -19,8 +20,8 @@ const Login = () => {
                     type="email"
                     placeholder="Email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
                     className="w-full p-2 border"
+                    onChange={(e) => setEmail(e.target.value)}
                     required
                 />
                 <input
@@ -39,6 +40,12 @@ const Login = () => {
                 </button>
             </form>
             <hr />
+            <Link
+                to="/"
+                className="px-4 py-2 mt-4 text-white bg-gray-600 rounded"
+            >
+                Quay về Trang Chủ
+            </Link>
         </div>
     );
 };
