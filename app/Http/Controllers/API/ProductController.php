@@ -5,7 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
-
+use function Laravel\Prompts\error;
+use Exception;
 class ProductController extends Controller
 {
     /**
@@ -56,6 +57,16 @@ class ProductController extends Controller
     public function show(string $id)
     {
         //
+        try {
+            $product = Product::find($id);
+            if (!$product) {
+                return response()->json(['message' => 'Product not found'], 404);
+            }
+
+            return response()->json(['data' => $product], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Server error', 'error' => $e->getMessage()], 500);
+        }
     }
 
     /**

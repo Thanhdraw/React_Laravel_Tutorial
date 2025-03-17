@@ -1,19 +1,49 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function ProductList() {
     const [loading, setLoading] = useState(true);
     const [products, setProducts] = useState([]);
+    const [error, setError] = useState(null);
+
+    // Fetch API - Error HandleLing
+    // const fetchProducts = async () => {
+    //     try {
+    //         const response = await fetch("http://localhost:8000/api/products");
+    //         if (!response.ok) {
+    //             throw new Error(`HTTP error! Status: ${response.status}`);
+    //         }
+    //         const data = await response.json();
+    //         console.log("Fetched Data:", data);
+    //         setProducts(data?.data || []);
+    //     } catch (error) {
+    //         console.log("Erorr: fetching data: ", error);
+    //         setError(error.message);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
+
+    // Axios API
+
+    const fetchProducts = async () => {
+        try {
+            const response = await axios.get(
+                "http://localhost:8000/api/products"
+            );
+            console.log("Fetched Data:", response.data);
+            setProducts(response.data?.data || []);
+        } catch (error) {
+            console.log("Error fetching data:", error);
+            setError(error.response?.data?.message || error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        fetch("http://localhost:8000/api/products")
-            .then((response) => response.json())
-            .then((data) => {
-                console.log("Fetched Data:", data); // Debug dữ liệu
-                setProducts(data.data);
-                setLoading(false);
-            })
-            .catch((error) => console.log("Error fetching data", error));
+        fetchProducts();
     }, []);
 
     if (loading) {
@@ -70,6 +100,13 @@ export default function ProductList() {
                                 className="w-16 p-1 text-black border border-gray-300 rounded"
                             />
                         </div>
+                        <Link
+                            to={`/products/${product.id}`}
+                            className="text-blue-500 hover:underline"
+                        >
+                            Xem chi tiết
+                        </Link>
+
                         <button className="w-full py-2 mt-4 text-white bg-blue-500 rounded-lg hover:bg-blue-600">
                             Thêm vào giỏ hàng
                         </button>
