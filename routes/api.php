@@ -4,6 +4,7 @@ use App\Http\Controllers\API\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\API\AccountController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -21,4 +22,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::apiResource('products', ProductController::class);
+
+
+
+Route::post('/login', [AccountController::class, 'login']);
 
