@@ -1,41 +1,20 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-
+import { useCart } from "../CartContext";
 export default function ProductList() {
     const [loading, setLoading] = useState(true);
     const [products, setProducts] = useState([]);
     const [error, setError] = useState(null);
-
-    // Fetch API - Error HandleLing
-    // const fetchProducts = async () => {
-    //     try {
-    //         const response = await fetch("http://localhost:8000/api/products");
-    //         if (!response.ok) {
-    //             throw new Error(`HTTP error! Status: ${response.status}`);
-    //         }
-    //         const data = await response.json();
-    //         console.log("Fetched Data:", data);
-    //         setProducts(data?.data || []);
-    //     } catch (error) {
-    //         console.log("Erorr: fetching data: ", error);
-    //         setError(error.message);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
-
-    // Axios API
-
+    const { addToCart } = useCart();
+    // Fetch API bằng Axios
     const fetchProducts = async () => {
         try {
             const response = await axios.get(
                 "http://localhost:8000/api/products"
             );
-            console.log("Fetched Data:", response.data);
             setProducts(response.data?.data || []);
         } catch (error) {
-            console.log("Error fetching data:", error);
             setError(error.response?.data?.message || error.message);
         } finally {
             setLoading(false);
@@ -46,9 +25,9 @@ export default function ProductList() {
         fetchProducts();
     }, []);
 
-    if (loading) {
-        return <p>Loading Products...</p>;
-    }
+    if (loading)
+        return <p className="text-center text-gray-500">Loading Products...</p>;
+    if (error) return <p className="text-center text-red-500">{error}</p>;
 
     const handleQuantityChange = (id, value) => {
         setProducts((prevProducts) =>
@@ -64,28 +43,45 @@ export default function ProductList() {
     };
 
     return (
-        <div className="max-w-5xl p-6 mx-auto">
-            <h1 className="mb-6 text-3xl font-bold text-center text-gray-800">
-                Danh sách sản phẩm
-            </h1>
+        <div className="max-w-6xl p-6 mx-auto">
+            {/* Link giỏ hàng */}
+            <div className="flex justify-between mb-6">
+                <h1 className="text-3xl font-bold text-gray-800">
+                    Danh sách sản phẩm
+                </h1>
+                <Link
+                    to={"/cart"}
+                    className="text-lg font-semibold text-blue-500 hover:text-blue-700"
+                >
+                    🛒 Giỏ hàng
+                </Link>
+            </div>
+
+            {/* Grid hiển thị sản phẩm */}
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {products.map((product) => (
                     <div
                         key={product.id}
-                        className="p-4 bg-white rounded-lg shadow-md"
+                        className="p-5 transition-all bg-white shadow-lg rounded-xl hover:shadow-xl"
                     >
-                        <img
-                            src={product.image}
-                            alt={product.name}
-                            className="object-cover w-full h-40 rounded-lg"
-                        />
-                        <h2 className="mt-4 text-xl font-semibold text-gray-800">
+                        {/* Ảnh sản phẩm */}
+                        <div className="overflow-hidden rounded-xl">
+                            <img
+                                src={product.image}
+                                alt={product.name}
+                                className="object-cover w-full h-48 transition-transform duration-300 hover:scale-105"
+                            />
+                        </div>
+                        {/* Thông tin sản phẩm */}
+                        <h2 className="mt-4 text-xl font-bold text-gray-800">
                             {product.name}
                         </h2>
                         <p className="text-lg font-bold text-green-600">
-                            {product.price}$
+                            ${product.price}
                         </p>
-                        <div className="flex items-center mt-4 space-x-2">
+
+                        {/* Input số lượng */}
+                        <div className="flex items-center mt-4 space-x-3">
                             <label className="text-gray-600">Số lượng:</label>
                             <input
                                 type="number"
@@ -97,28 +93,38 @@ export default function ProductList() {
                                         e.target.value
                                     )
                                 }
-                                className="w-16 p-1 text-black border border-gray-300 rounded"
+                                className="w-16 p-2 text-center border rounded-lg focus:ring-2 focus:ring-blue-500"
                             />
                         </div>
-                        <Link
-                            to={`/products/${product.id}`}
-                            className="text-blue-500 hover:underline"
-                        >
-                            Xem chi tiết
-                        </Link>
 
-                        <button className="w-full py-2 mt-4 text-white bg-blue-500 rounded-lg hover:bg-blue-600">
-                            Thêm vào giỏ hàng
-                        </button>
+                        {/* Nút điều hướng */}
+                        <div className="flex flex-col mt-5 space-y-3">
+                            <Link
+                                to={`/products/${product.id}`}
+                                className="w-full px-4 py-2 text-center text-blue-500 transition duration-300 border border-blue-500 rounded-lg hover:bg-blue-500 hover:text-white"
+                            >
+                                Xem chi tiết
+                            </Link>
+                            <button
+                                onClick={() => addToCart(product)}
+                                className="w-full px-4 py-2 text-white transition duration-300 bg-blue-500 rounded-lg hover:bg-blue-600"
+                            >
+                                Thêm vào giỏ hàng
+                            </button>
+                        </div>
                     </div>
                 ))}
             </div>
-            <Link
-                to="/"
-                className="px-4 py-2 mt-4 text-white bg-gray-600 rounded"
-            >
-                Quay về Trang Chủ
-            </Link>
+
+            {/* Nút quay về trang chủ */}
+            <div className="mt-6 text-center">
+                <Link
+                    to="/"
+                    className="px-6 py-3 text-white transition duration-300 bg-gray-600 rounded-lg hover:bg-gray-700"
+                >
+                    Quay về Trang Chủ
+                </Link>
+            </div>
         </div>
     );
 }
