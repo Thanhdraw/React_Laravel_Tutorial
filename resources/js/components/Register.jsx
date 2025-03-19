@@ -1,10 +1,14 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-const Login = () => {
+const Register = () => {
     // State để lưu email & password
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+
+    const [name, setName] = useState("");
+
     const [userInfo, setUserInfo] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -12,25 +16,26 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const data = { email, password };
-
-        // console.log("Email:", email, "Password:", password);
-        console.log(`Data: ${data}`);
+        const data = {
+            name,
+            email,
+            password,
+            password_confirmation: confirmPassword,
+        };
         try {
             const response = await axios.post(
-                `http://localhost:8000/api/login`,
+                `http://localhost:8000/api/register`,
                 data,
                 { headers: { "Content-Type": "application/json" } }
             );
             if (response.data) {
                 setUserInfo(response.data.user);
-                console.log("User Info:", response.data);
             }
         } catch (error) {
-            console.log(`Your Error: ${error.response}`);
-        } finally {
-            setLoading(false);
+            console.log("Error:", error.response.data); // In ra lỗi chi tiết từ API
         }
+
+        console.log("Name:", name, "Email:", email, "Password:", password);
     };
 
     if (loading) {
@@ -38,8 +43,16 @@ const Login = () => {
     }
     return (
         <div>
-            <h2 className="text-xl font-bold">Đăng nhập</h2>
+            <h2 className="text-xl font-bold">Đăng Kí </h2>
             <form onSubmit={handleSubmit} className="space-y-3">
+                <input
+                    type="text"
+                    placeholder="Name"
+                    value={name}
+                    className="w-full p-2 border"
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                />
                 <input
                     type="email"
                     placeholder="Email"
@@ -56,11 +69,19 @@ const Login = () => {
                     className="w-full p-2 border"
                     required
                 />
+                <input
+                    type="password"
+                    placeholder="Xác nhận Mật khẩu"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="w-full p-2 border"
+                    required
+                />
                 <button
                     type="submit"
                     className="px-4 py-2 text-white bg-blue-500"
                 >
-                    Đăng nhập
+                    Đăng Kí
                 </button>
             </form>
             {userInfo && (
@@ -73,7 +94,7 @@ const Login = () => {
                         <strong>Email:</strong> {userInfo.email}
                     </p>
                     <p>
-                        <strong>Vai trò:</strong> {userInfo.role ?? "No role"}
+                        <strong>Vai trò:</strong> {userInfo.role}
                     </p>
                 </div>
             )}
@@ -86,14 +107,8 @@ const Login = () => {
             >
                 Quay về Trang Chủ
             </Link>
-            <Link
-                to="/register"
-                className="px-4 py-2 mt-4 text-white bg-blue-600 rounded"
-            >
-                Đăng kí
-            </Link>
         </div>
     );
 };
 
-export default Login;
+export default Register;

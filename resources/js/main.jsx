@@ -7,6 +7,8 @@ import ProductList from "./components/ProductList";
 import Login from "./components/Login";
 import Details from "./components/detail";
 
+import Register from "./components/Register";
+
 function App() {
     return (
         <BrowserRouter>
@@ -15,6 +17,7 @@ function App() {
                 <Route path="/products" element={<ProductList />} />
                 <Route path="/Login" element={<Login></Login>} />
                 <Route path="/products/:id" element={<Details />} />
+                <Route path="/register" element={<Register></Register>}></Route>
             </Routes>
         </BrowserRouter>
     );

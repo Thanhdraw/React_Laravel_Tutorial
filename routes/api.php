@@ -26,4 +26,4 @@ Route::apiResource('products', ProductController::class);
 
 
 Route::post('/login', [AccountController::class, 'login']);
-
+Route::post('/register', [AccountController::class, 'Register']);
