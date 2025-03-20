@@ -43,14 +43,18 @@ const cart = () => {
                 <h1 className="mb-8 text-2xl font-bold text-gray-800">
                     Giỏ hàng của bạn
                 </h1>
-                {cart.length === 0 ? <p>Giỏ hàng trống</p> : null}
+
                 {cart.map((item, index) => (
                     <p key={index}>
                         {item.name} - {item.price}$
                     </p>
                 ))}
+
                 <div className="p-6 mb-6 bg-white rounded-lg shadow-md">
                     <div className="flex justify-between pb-6 mb-6 border-b border-gray-200">
+                        <h2 className="text-lg font-semibold text-gray-700">
+                            STT
+                        </h2>
                         <h2 className="text-lg font-semibold text-gray-700">
                             Sản phẩm
                         </h2>
@@ -64,11 +68,13 @@ const cart = () => {
                         </div>
                     </div>
 
-                    {cartItems.map((item) => (
+                    {cart.length === 0 ? <p>Giỏ hàng trống</p> : null}
+                    {cart.map((item, index) => (
                         <div
-                            key={item.id}
+                            key={index}
                             className="flex items-center pb-6 mb-6 border-b border-gray-200"
                         >
+                            <p>{index + 1}</p>
                             <div className="flex w-full">
                                 <div className="w-20 h-20 mr-4">
                                     <img

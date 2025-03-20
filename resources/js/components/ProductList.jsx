@@ -30,12 +30,15 @@ export default function ProductList() {
     if (error) return <p className="text-center text-red-500">{error}</p>;
 
     const handleQuantityChange = (id, value) => {
+        const quantity = parseInt(value, 10);
+
         setProducts((prevProducts) =>
             prevProducts.map((product) =>
                 product.id === id
                     ? {
                           ...product,
-                          quantity: Math.max(1, parseInt(value, 10) || 1),
+                          quantity:
+                              isNaN(quantity) || quantity < 1 ? 1 : quantity, // Đảm bảo số lượng hợp lệ
                       }
                     : product
             )
@@ -106,7 +109,9 @@ export default function ProductList() {
                                 Xem chi tiết
                             </Link>
                             <button
-                                onClick={() => addToCart(product)}
+                                onClick={() =>
+                                    addToCart(product, product.quantity || 1)
+                                }
                                 className="w-full px-4 py-2 text-white transition duration-300 bg-blue-500 rounded-lg hover:bg-blue-600"
                             >
                                 Thêm vào giỏ hàng

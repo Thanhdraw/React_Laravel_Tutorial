@@ -8,8 +8,23 @@ export function CartProvider({ children }) {
     const [cart, setCart] = useState([]); // Giỏ hàng lưu dưới dạng array
 
     // Hàm thêm sản phẩm vào giỏ hàng
-    const addToCart = (product) => {
-        setCart((prevCart) => [...prevCart, product]); // Thêm vào giỏ hàng
+    const addToCart = (product, quantity) => {
+        setCart((prevCart) => {
+            const existingItem = prevCart.find(
+                (item) => item.id === product.id
+            );
+            if (existingItem) {
+                return prevCart.map((item) =>
+                    item.id === product.id
+                        ? { ...item, quantity: quantity } // Cập nhật lại số lượng chính xác
+                        : item
+                );
+            }
+            return [
+                ...prevCart,
+                { ...product, quantity: Math.max(1, quantity) },
+            ];
+        });
     };
 
     return (
